@@ -27,7 +27,7 @@ vet:
 get-deps:
 	@echo "==> Fetching dependencies"
 	@go get -v $(TEST)
-	#@go get -u github.com/golang/lint/golint
+	@go get -u github.com/golang/lint/golint
 	
 
 fmt:
