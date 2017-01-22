@@ -11,8 +11,30 @@ import (
 func TestGetAuth(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		expire := time.Now().AddDate(0, 0, 1)
-		cookie1 := http.Cookie{"test", "testcookie", "/", "www.skyscapecloud.com", expire, expire.Format(time.UnixDate), 86400, true, true, "test=testcookie", []string{"test=testcookie"}}
-		cookie2 := http.Cookie{"test2", "testcookie2", "/", "www.skyscapecloud.com", expire, expire.Format(time.UnixDate), 86400, true, true, "test2=testcookie2", []string{"test2=testcookie2"}}
+		cookie1 := http.Cookie{
+			Name:       "test",
+			Value:      "testcookie",
+			Path:       "/",
+			Domain:     "www.skyscapecloud.com",
+			Expires:    expire,
+			RawExpires: expire.Format(time.UnixDate),
+			MaxAge:     86400,
+			Secure:     true,
+			HttpOnly:   true,
+			Raw:        "test=testcookie",
+			Unparsed:   []string{"test=testcookie"}}
+		cookie2 := http.Cookie{
+			Name:       "test2",
+			Value:      "testcookie2",
+			Path:       "/",
+			Domain:     "www.skyscapecloud.com",
+			Expires:    expire,
+			RawExpires: expire.Format(time.UnixDate),
+			MaxAge:     86400,
+			Secure:     true,
+			HttpOnly:   true,
+			Raw:        "test2=test2cookie",
+			Unparsed:   []string{"test2=test2cookie"}}
 		http.SetCookie(w, &cookie1)
 		http.SetCookie(w, &cookie2)
 		w.WriteHeader(http.StatusCreated)
