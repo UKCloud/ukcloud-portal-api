@@ -8,7 +8,9 @@ import (
 
 // VdcArray holds the json response
 type VdcArray struct {
-	Data []Vdc `json:"data"`
+	Data   []Vdc  `json:"data"`
+	Error  string `json:"error"`
+	Detail string `json:"detail"`
 }
 
 // Vdc holds each vdc of the VdcArray
@@ -39,6 +41,10 @@ func (a *API) GetVdc(AccountID int, VorgID int) (VdcArray, error) {
 
 	if err := getJSON(VdcURL, &vdcs); err != nil {
 		return vdcs, fmt.Errorf("Sorry, there was an error retrieving the accounts")
+	}
+
+	if len(vdcs.Error) > 0 {
+		return vdcs, fmt.Errorf(vdcs.Error + " - " + vdcs.Detail)
 	}
 
 	return vdcs, err
