@@ -44,9 +44,10 @@ func TestGetAuth(t *testing.T) {
 
 	papi := new(API)
 	papi.SetAuthURL(ts.URL)
-	r := papi.GetAuth("username", "password")
+	r, err := papi.GetAuth("username", "password")
 
-	assertEqual(t, r, 0, "")
+	assertEqual(t, r, true, "")
+	assertEqual(t, err, nil, "")
 
 	assertEqual(t, len(papi.GetCookieCollection().Collection), 2, "")
 }
@@ -60,9 +61,10 @@ func TestGetAuthNoCookie(t *testing.T) {
 
 	papi := new(API)
 	papi.SetAuthURL(ts.URL)
-	r := papi.GetAuth("username", "password")
+	r, err := papi.GetAuth("username", "password")
 
-	assertEqual(t, r, 0, "")
+	assertEqual(t, r, true, "")
+	assertEqual(t, err, nil, "")
 
 	assertEqual(t, len(papi.GetCookieCollection().Collection), 0, "")
 }
@@ -76,8 +78,8 @@ func TestGetAuthIncorrectStatus(t *testing.T) {
 
 	papi := new(API)
 	papi.SetAuthURL(ts.URL)
-	r := papi.GetAuth("username", "password")
+	_, err := papi.GetAuth("username", "password")
 
-	assertEqual(t, r, 4, "")
+	assertEqual(t, err.Error(), "Unauthorised", "")
 
 }
