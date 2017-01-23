@@ -8,7 +8,9 @@ import (
 
 // VorgsArray holds the json response
 type VorgsArray struct {
-	Data []Vorgs `json:"data"`
+	Data   []Vorgs `json:"data"`
+	Error  string  `json:"error"`
+	Detail string  `json:"detail"`
 }
 
 // Vorgs holds each vdc of the VdcArray
@@ -39,6 +41,10 @@ func (a *API) GetVorgs(AccountID int) (VorgsArray, error) {
 
 	if err := getJSON(VorgsURL, &vorgs); err != nil {
 		return vorgs, fmt.Errorf("Sorry, there was an error retrieving the Vorgs")
+	}
+
+	if len(vorgs.Error) > 0 {
+		return vorgs, fmt.Errorf(vorgs.Error + " - " + vorgs.Detail)
 	}
 
 	return vorgs, err
