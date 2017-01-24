@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"log"
+	//"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -43,7 +43,6 @@ func TestGetVdcInvalidPerms(t *testing.T) {
 	papi.SetVdcURL(ts.URL)
 	vdcs, err = papi.GetVdc(1, 1)
 
-	log.Println(vdcs)
 	if err == nil {
 		t.Errorf("This should throw error!")
 	} else {
