@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"strconv"
+	"os"
 	"time"
 )
 
@@ -23,6 +23,16 @@ var cookieCollection = new(CookiesCollection)
 // getJSON calls the API and returns the JSON
 func getJSON(myURL string, target interface{}) error {
 
+	body := getRawJSON(myURL)
+
+	if err := json.Unmarshal(body, target); err != nil {
+		return err
+	}
+
+	return json.Unmarshal(body, target)
+}
+
+func getRawJSON(myURL string) []byte {
 	jar, _ := cookiejar.New(nil)
 
 	u, err := url.Parse(myURL)
@@ -36,17 +46,14 @@ func getJSON(myURL string, target interface{}) error {
 
 	r, err := myClient.Get(myURL)
 	if err != nil {
-		return err
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 	defer r.Body.Close()
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, _ := ioutil.ReadAll(r.Body)
 
-	if err := json.Unmarshal(body, target); err != nil {
-		return err
-	}
-
-	return json.Unmarshal(body, target)
+	return body
 }
 
 func postJSON(myURL string, data interface{}) (string, http.Header, error) {
@@ -65,8 +72,8 @@ func postJSON(myURL string, data interface{}) (string, http.Header, error) {
 		DisableCompression: true,
 	}
 
-	fmt.Println("COOKIES " + strconv.Itoa(len(cookieCollection.Collection)))
-	fmt.Println("JSON " + string(jsonStr))
+	//fmt.Println("COOKIES " + strconv.Itoa(len(cookieCollection.Collection)))
+	//fmt.Println("JSON " + string(jsonStr))
 
 	req, err := http.NewRequest("POST", myURL, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
@@ -79,15 +86,15 @@ func postJSON(myURL string, data interface{}) (string, http.Header, error) {
 	}
 	defer r.Body.Close()
 
-	fmt.Println("response Status:", r.Status)
-	fmt.Println("response Headers:", r.Header)
+	//fmt.Println("response Status:", r.Status)
+	//fmt.Println("response Headers:", r.Header)
 	body, _ := ioutil.ReadAll(r.Body)
 
-	fmt.Println("response Body:", string(body))
+	//fmt.Println("response Body:", string(body))
 
-	for k, v := range r.Header {
-		log.Println("key:", k, "value:", v)
-	}
+	//for k, v := range r.Header {
+	//	log.Println("key:", k, "value:", v)
+	//}
 
 	return string(body), r.Header, err
 
